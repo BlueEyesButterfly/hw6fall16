@@ -25,21 +25,32 @@ class Movie < ActiveRecord::Base
   end
 
   def self.create_from_tmdb(tmdb_id)
-    self.api_key
-    detail= Tmdb::Movie.detail(tmdb_id)
-    movie_params={:title=>detail["original_title"],:rating=>self.get_rating(tmdb_id),:release_date =>detail["release_date"], :description=>detail["overview"]}
-    Movie.create!(movie_params)
+    begin 
+      self.api_key
+      detail= Tmdb::Movie.detail(tmdb_id)
+      movie_params={:title=>detail["original_title"],:rating=>self.get_rating(tmdb_id),:release_date =>detail["release_date"], :description=>detail["overview"]}
+      Movie.create!(movie_params)
+    rescue Tmdb::InvalidApiKeyError
+      raise Movie::InvalidKeyError, 'Invalid API key'
+    end  
   end
   
   def self.get_rating(tmdb_id)
-    rating = 'UNKNOWN'
-    Tmdb::Movie.releases(tmdb_id)["countries"].each do |e|
-      if e["iso_3166_1"] == "US" and e["certification"]!=""
-        rating = e["certification"]
-        break
+    begin
+      self.api_key
+      rating = 'UNKNOWN'
+      Tmdb::Movie.releases(tmdb_id)["countries"].each do |e|
+        if e["iso_3166_1"] == "US" and e["certification"]!=""
+          rating = e["certification"]
+          break
+        else
+    
+        end
       end
+      return rating
+    rescue Tmdb::InvalidApiKeyError
+      raise Movie::InvalidKeyError, 'Invalid API key'
     end
-    return rating
   end
 
 end
