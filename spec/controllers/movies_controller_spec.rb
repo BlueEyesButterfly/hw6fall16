@@ -32,7 +32,7 @@ describe MoviesController do
     end
   end
   
-  describe 'adding TMDb' do
+  describe 'adding movies from TMDb' do
     it 'should not call Movie.create_from_tmdb if no checkbox is checked' do
       expect(Movie).not_to receive(:create_from_tmdb)
       post :add_tmdb, {:tmdb_movies => nil}
@@ -45,7 +45,8 @@ describe MoviesController do
   
   describe 'showing a movie' do
     it 'should call Movie.find' do
-      expect(Movie).to receive(:find).with("1")
+      fake_id="1"
+      expect(Movie).to receive(:find).with(fake_id)
       get :show, {:id => "1"}
     end
     it 'should select the show template for rendering' do
@@ -57,10 +58,11 @@ describe MoviesController do
   
   describe 'editing a movie' do
     it 'should call Movie.find' do
-      expect(Movie).to receive(:find).with("1")
+      fake_id="1"
+      expect(Movie).to receive(:find).with(fake_id)
       get :edit, {:id => "1"}
     end
-    it 'should select the show template for rendering' do
+    it 'should select the edit template for rendering' do
       allow(Movie).to receive(:find)
       get :edit, {:id => "1"}
       expect(response).to render_template('edit')
@@ -79,46 +81,40 @@ describe MoviesController do
   
   fake_movie = {:title => "title", :rating => "rating", :description => "description", :release_date => "2000-01-01"}
   
-  describe 'creating a movie' do
+  describe 'creating a new movie' do
     it "should createa a new movie" do
       expect { post :create, :movie => fake_movie }.to change(Movie, :count).by(1)
     end
-    
     it "should redirect to home page after movie being created" do
       post :create, {:movie => fake_movie}
       expect(response).to redirect_to(movies_path)
     end
   end
   
-  describe "editing a movie" do
-    before(:each) do
+  before(:each) do
       @movie = Movie.create! fake_movie
-    end
-    
-    describe "updating a movie" do
-      update_param = {:title => "new test title"}
-      
-      it "should update the chosen movie" do
-        Movie.any_instance.should_receive(:update_attributes!).with(update_param)
-        put :update, :id => @movie.id, :movie => update_param
-      end
+  end
   
-      it "should redirect to the home page after successful updating" do
-        allow(Movie).to receive(:update).with(update_param)
-        put :update, :id => @movie.id, :movie => update_param
-        expect(response).to redirect_to(movie_path(@movie))
-      end
+  describe "updating a movie" do
+    fake_param = {:title => "new test title"}
+    it "should update the chosen movie" do
+      Movie.any_instance.should_receive(:update_attributes!).with(fake_param)
+      put :update, :id => @movie.id, :movie => fake_param
     end
+    it "should redirect to the home page after successful updating" do
+      allow(Movie).to receive(:update).with(fake_param)
+      put :update, :id => @movie.id, :movie => fake_param
+      expect(response).to redirect_to(movie_path(@movie))
+    end
+  end
     
-    describe "deleting a movie" do
-      it "should delete the chosen movie" do
-        expect { delete :destroy, :id => @movie.id}.to change(Movie, :count).by(-1)
-      end
-      
-      it "should redirect to the home page after deleting" do
-        delete :destroy, :id => @movie.id
-        expect(response).to redirect_to(movies_path)
-      end
+  describe "deleting a movie" do
+    it "should delete the chosen movie" do
+      expect { delete :destroy, :id => @movie.id}.to change(Movie, :count).by(-1)
+    end
+    it "should redirect to the home page after deleting" do
+      delete :destroy, :id => @movie.id
+      expect(response).to redirect_to(movies_path)
     end
   end
 end
