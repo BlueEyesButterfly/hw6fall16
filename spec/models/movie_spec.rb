@@ -127,7 +127,7 @@ end
         fake_results = {"countries" => []}
         expect(Tmdb::Movie).to receive(:detail).with(1).and_return({})
         allow(Tmdb::Movie).to receive(:releases).with(1).and_return(fake_results)
-        Movie.create_from_tmdb(1)
+        Movie.create_tmdb(1)
       end
     end
     # context 'with valid key' do

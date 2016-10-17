@@ -33,12 +33,12 @@ describe MoviesController do
   end
   
   describe 'adding TMDb' do
-    it 'should not call Movie.create_tmdb_movie if no checkbox is checked' do
-      expect(Movie).not_to receive(:create_tmdb_movie)
+    it 'should not call Movie.create_from_tmdb if no checkbox is checked' do
+      expect(Movie).not_to receive(:create_from_tmdb)
       post :add_tmdb, {:tmdb_movies => nil}
     end
-    it 'should call  Movie.create_tmdb_movie if any checkbox is checked' do
-      expect(Movie).to receive(:create_tmdb_movie).with("278")
+    it 'should call  Movie.create_from_tmdb if any checkbox is checked' do
+      expect(Movie).to receive(:create_from_tmdb).with("278")
       post :add_tmdb, {:tmdb_movies => {"278": "1"}}
     end
   end
