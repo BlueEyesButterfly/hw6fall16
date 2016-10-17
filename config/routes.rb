@@ -15,10 +15,24 @@ Rails.application.routes.draw do
   #   resources :products
 
   resources :movies
+  #resources :person, :movie, :tv, :collection, :company
   # map '/' to be a redirect to '/movies'
   root :to => redirect('/movies')
-  post 'movies/search_tmdb'
+  post '/movies/search_tmdb'
+  post '/movies/add_tmdb'
+  # match '/search_tmdb', to: 'movies#search_tmdb', via: :get
+  # match '/add_tmdb', to: 'movies#add_tmdb', via: :post
   
+  # match 'photos', to: 'photos#show', via: [:get, :post]
+
+  #post '/search_tmdb', to: 'movies#search_tmdb'
+  #get '/login',  to: 'sessions#new'
+  #, to: 'sessions#search_tmdb
+  #'
+  
+  # get '/login',  to: 'sessions#new'
+  # post '/login_create',  to: 'sessions#create'
+  # delete '/logout',  to: 'sessions#destroy'
   # Example resource route with options:
   #   resources :products do
   #     member do

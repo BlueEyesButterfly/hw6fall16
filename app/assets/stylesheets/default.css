@@ -24,6 +24,11 @@ h1 {
   width: 100%;
   border-bottom: 1px solid DarkSlateGrey;
 }
+label#searchLabel{
+  background: transparent;
+  color: maroon;
+  font-weight: bold;
+}
 h1.title {
   margin: 0 0 1em;
   padding: 10px;
